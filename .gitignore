@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Sourced dataset repo (re-fetchable, large) and generated flat dataset
+data_src/
+data/raw/
+
+# Trained model artifacts (re-generatable via training script)
+backend/models/*.keras
+backend/models/labels.json
+
+.DS_Store

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Smart Produce Scanner</title>
+<link rel="stylesheet" href="style.css?v=2" />
+</head>
+<body>
+  <main class="page">
+    <header>
+      <h1>🍎🍌 Smart Produce Scanner</h1>
+      <p class="subtitle">Upload a photo of an apple or banana to identify it, check ripeness, and hear the result.</p>
+    </header>
+
+    <section class="upload-card" aria-label="Upload a fruit photo">
+      <label for="file-input" class="drop-zone" id="drop-zone" tabindex="0">
+        <span id="drop-zone-text">Click to choose a photo, or drag one here</span>
+        <input type="file" id="file-input" accept="image/*" hidden />
+      </label>
+
+      <img id="preview" alt="Selected fruit preview" hidden />
+
+      <button id="scan-btn" disabled>Scan Fruit</button>
+      <p id="status" role="status" aria-live="polite"></p>
+    </section>
+
+    <section id="result-card" class="result-card" hidden aria-live="polite">
+      <div class="result-header">
+        <h2 id="result-title"></h2>
+        <span id="result-confidence" class="badge"></span>
+      </div>
+
+      <p id="ripeness-note" class="ripeness-note"></p>
+
+      <div class="info-grid">
+        <div>
+          <h3>Nutrition <span class="unit">(per 100g)</span></h3>
+          <table id="nutrition-table"></table>
+        </div>
+        <div>
+          <h3>Health Benefits</h3>
+          <ul id="health-list"></ul>
+        </div>
+        <div>
+          <h3>Usage Ideas</h3>
+          <ul id="usage-list"></ul>
+        </div>
+      </div>
+
+      <button id="speak-btn" type="button">🔊 Listen to result</button>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
