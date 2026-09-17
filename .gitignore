@@ -7,8 +7,9 @@ venv/
 data_src/
 data/raw/
 
-# Trained model artifacts (re-generatable via training script)
+# Trained model artifacts (re-generatable via training scripts)
 backend/models/*.keras
 backend/models/labels.json
+backend/models/novelty_threshold.json
 
 .DS_Store

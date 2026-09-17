@@ -52,6 +52,7 @@ function handleFile(file) {
   scanBtn.disabled = false;
   setStatus("");
   resultCard.hidden = true;
+  window.scannerScene?.setState("idle");
 }
 
 dropZone.addEventListener("click", () => fileInput.click());
@@ -86,6 +87,7 @@ scanBtn.addEventListener("click", async () => {
   scanBtn.disabled = true;
   setStatus("Scanning…");
   resultCard.hidden = true;
+  window.scannerScene?.setState("scanning");
 
   const formData = new FormData();
   formData.append("file", selectedFile);
@@ -97,14 +99,17 @@ scanBtn.addEventListener("click", async () => {
     if (!data.accepted) {
       setStatus(data.message || "Could not identify the fruit.", true);
       scanBtn.disabled = false;
+      window.scannerScene?.setState("idle");
       return;
     }
 
     setStatus("");
     renderResult(data);
+    window.scannerScene?.setState("result", { label: data.label, ripeness: data.ripeness });
   } catch (err) {
     console.error(err);
     setStatus("Something went wrong talking to the server.", true);
+    window.scannerScene?.setState("idle");
   } finally {
     scanBtn.disabled = false;
   }
@@ -112,7 +117,7 @@ scanBtn.addEventListener("click", async () => {
 
 function renderResult(data) {
   resultTitle.textContent = `${data.label} — ${data.ripeness}`;
-  resultConfidence.textContent = `${Math.round(data.confidence * 100)}% confident`;
+  resultConfidence.textContent = `${Math.round(data.confidence * 100)}%`;
   ripenessNote.textContent = data.ripeness_note || "";
 
   nutritionTable.innerHTML = "";

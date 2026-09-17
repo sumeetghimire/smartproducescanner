@@ -5,6 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from .config import CONFIDENCE_THRESHOLD, FRONTEND_DIR
 from .fruit_info import get_fruit_info, get_ripeness_note
 from .inference import classify, decode_image
+from .novelty import is_recognised
 from .ripeness import estimate_ripeness
 from .schemas import PredictionResponse
 
@@ -16,6 +17,16 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def no_cache_static(request, call_next):
+    # This is a small local prototype, not a deployed site behind a CDN --
+    # disable caching entirely so edits to the frontend are always picked
+    # up on reload instead of silently serving a stale disk-cached copy.
+    response = await call_next(request)
+    response.headers["Cache-Control"] = "no-store"
+    return response
 
 
 @app.get("/api/health")
@@ -31,6 +42,16 @@ async def predict(file: UploadFile = File(...)):
         image_bgr = decode_image(raw_bytes)
     except ValueError as exc:
         return PredictionResponse(accepted=False, message=str(exc))
+
+    recognised, _novelty_error = is_recognised(image_bgr)
+    if not recognised:
+        return PredictionResponse(
+            accepted=False,
+            message=(
+                "This doesn't look like an apple or a banana. Please upload "
+                "a clear photo of one of those two fruits."
+            ),
+        )
 
     label, confidence = classify(image_bgr)
 
